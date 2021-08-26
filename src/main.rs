@@ -29,6 +29,14 @@ fn main() {
     println!("\tSorted Array: {:?}", input_array);
     println!("\tTime (ms): {:?}", duration);
 
+    let mut input_array = large_input_array();
+    let timer = SystemTime::now();
+    quick_sort(&mut input_array);
+    let duration = timer.elapsed().expect("error").as_millis();
+    println!("quick_sort:");
+    println!("\tSorted Array: {:?}", input_array);
+    println!("\tTime (ms): {:?}", duration);
+
 }
 
 fn selection_sort(array: &mut [i32]) -> &mut [i32] {
@@ -110,8 +118,8 @@ fn merge_sort(array: &mut [i32]) -> &mut [i32] {
 
     let middle = array.len()/2;
     let end = array.len();
-    bubble_sort(&mut array[0..middle]);
-    bubble_sort(&mut array[middle..end]);
+    quick_sort(&mut array[0..middle]);
+    quick_sort(&mut array[middle..end]);
 
     let (mut i, mut j) = (0, middle);
 
@@ -158,5 +166,58 @@ fn merge_sort(array: &mut [i32]) -> &mut [i32] {
     }
 
     array
+
+}
+
+fn quick_sort(array: &mut [i32]) -> &mut [i32] {
+
+    let len = array.len();
+
+    if len <= 1 { return array; }
+
+    let middle = partition(array);
+    quick_sort(&mut array[0..middle]);
+    quick_sort(&mut array[(middle+1)..len]);
+
+    array
+
+}
+
+fn partition(array: &mut [i32]) -> usize {
+
+    let mut lesser: Vec<i32> = Vec::new();
+    let mut greater: Vec<i32> = Vec::new();
+
+    let partition_point = array[0];
+
+    for i in 1..array.len() {
+
+        if array[i] < partition_point {
+
+            lesser.push(array[i]);
+
+        } else {
+
+            greater.push(array[i]);
+
+        }
+
+    }
+
+    for i in 0..lesser.len() {
+
+        array[i] = *lesser.get(i).expect("error");
+
+    }
+
+    array[lesser.len()] = partition_point;
+
+    for i in 0..greater.len() {
+
+        array[i+lesser.len()+1] = *greater.get(i).expect("error");
+
+    }
+
+    lesser.len()
 
 }
