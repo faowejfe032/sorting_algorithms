@@ -114,58 +114,76 @@ fn bubble_sort(array: &mut [i32]) -> &mut [i32] {
 
 }
 
-fn merge_sort(array: &mut [i32]) -> &mut [i32] {
+fn merge_sort(array: &mut [i32]) {
 
-    let middle = array.len()/2;
-    let end = array.len();
-    quick_sort(&mut array[0..middle]);
-    quick_sort(&mut array[middle..end]);
+    let len = array.len();
 
-    let (mut i, mut j) = (0, middle);
+    if len <= 1 {
+        return
+    }
 
-    let mut sorted_array: Vec<i32> = Vec::new();
+    merge_sort(&mut array[0..len/2]);
+    merge_sort(&mut array[(len/2)..len]);
+    merge(array);
+
+}
+
+fn merge(array: &mut [i32]) {
+
+    let len = array.len();
+    let mid = len/2;
+
+    let mut vector: Vec<i32> = Vec::new();
+
+    let (mut i, mut j) = (0, mid);
 
     loop {
 
-        if i < middle && j < end {
+        if i < mid && j < len {
 
             if array[i] < array[j] {
-                sorted_array.push(array[i]);
+
+                vector.push(array[i]);
                 i += 1;
-                continue;
+
             } else {
-                sorted_array.push(array[j]);
+
+                vector.push(array[j]);
                 j += 1;
-                continue;
+
             }
 
-        } else {
-
-
-
-            if i < middle {
-                sorted_array.push(array[i]);
-                i += 1;
-                continue;
-            }
-
-            if j < end {
-                sorted_array.push(array[j]);
-                j += 1;
-                continue;
-            }
-
-            break;
+            continue;
 
         }
 
-    }
+        if !(i < mid) {
 
-    for i in 0..array.len() {
-        array[i] = *sorted_array.get(i).expect("error");
-    }
+            for j in j..len {
+                vector.push(array[j]);
+            }
 
-    array
+            for k in 0..array.len() {
+                array[k] = *vector.get(k).expect("error");
+            }
+
+        }
+
+        if !(j < len) {
+
+            for i in i..mid {
+                vector.push(array[i]);
+            }
+
+            for k in 0..array.len() {
+                array[k] = *vector.get(k).expect("error");
+            }
+
+        }
+
+        break;
+
+    }
 
 }
 
